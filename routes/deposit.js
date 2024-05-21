@@ -2,20 +2,21 @@
 
 const express = require('express');
 const db = require("../models");
-const depositService = require('../services/depositService'); // Ajuste o caminho conforme necessário
-const DepositService = new depositService(db.Deposit); // Ajuste o caminho conforme necessário
+const DepositService = require('../services/depositService'); // Ajuste o caminho conforme necessário
 
-const depositController = require('../controllers/depositController'); // Ajuste o caminho conforme necessário
-const DepositController = new depositController(DepositService);
+const depositServiceInstance = new DepositService(db.Deposit); // Ajuste o caminho conforme necessário
 
-const { authenticateToken, logout } = require('../middleware/auth'); 
+const DepositController = require('../controllers/depositController'); // Ajuste o caminho conforme necessário
+const depositControllerInstance = new DepositController(depositServiceInstance);
+
+const { authenticateToken, logout } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.post('/',authenticateToken, DepositController.createDeposit);
-router.put('/:id',authenticateToken, DepositController.updateDeposit);
-router.get('/',authenticateToken, DepositController.findAllDeposits);
-router.get('/:id',authenticateToken, DepositController.findDepositById);
-router.get('/:id/posicao',authenticateToken, DepositController.getPosicaoByDeposit);
+router.post('/', authenticateToken, (req, res) => depositControllerInstance.createDeposit(req, res));
+router.put('/:id', authenticateToken, (req, res) => depositControllerInstance.updateDeposit(req, res));
+router.get('/', authenticateToken, (req, res) => depositControllerInstance.findAllDeposits(req, res));
+router.get('/:id', authenticateToken, (req, res) => depositControllerInstance.findDepositById(req, res));
+router.get('/:id/posicao', authenticateToken, (req, res) => depositControllerInstance.getPosicaoByDeposit(req, res));
 
 module.exports = router;

@@ -8,7 +8,7 @@ const movimentacaoProdutoServiceInstance = new MovimentacaoProdutoService(db.Mov
 const MovimentacaoProdutoController = require('../controllers/movimentacaoProdutoController'); // Ajuste o caminho conforme necessário
 const movimentacaoProdutoControllerInstance = new MovimentacaoProdutoController(movimentacaoProdutoServiceInstance);
 
-const { authenticateToken } = require('../middlewares/authMiddleware'); // Ajuste o caminho conforme necessário
+const { authenticateToken, logout } = require('../middleware/auth'); 
 
 const router = express.Router();
 

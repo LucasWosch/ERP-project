@@ -2,21 +2,21 @@
 
 const db = require('../models'); // Ajuste o caminho conforme necessário
 
-const DepositService = {
+class DepositService {
     constructor(depositModel) {
         this.Deposit = depositModel;
-    },
-    
-    createDeposit: async (depositData) => {
+    }
+
+    async createDeposit(depositData) {
         try {
             const deposit = await this.Deposit.create(depositData);
             return deposit;
         } catch (error) {
             throw error;
         }
-    },
+    }
 
-    updateDeposit: async (id, depositData) => {
+    async updateDeposit(id, depositData) {
         try {
             const updatedDeposit = await this.Deposit.update(depositData, {
                 where: { id: id }
@@ -25,9 +25,9 @@ const DepositService = {
         } catch (error) {
             throw error;
         }
-    },
+    }
 
-    findAllDeposits: async (page, pageSize) => {
+    async findAllDeposits(page, pageSize) {
         try {
             const offset = (page - 1) * pageSize;
             const deposits = await this.Deposit.findAndCountAll({
@@ -38,18 +38,18 @@ const DepositService = {
         } catch (error) {
             throw error;
         }
-    },
+    }
 
-    findDepositById: async (id) => {
+    async findDepositById(id) {
         try {
             const deposit = await this.Deposit.findByPk(id);
             return deposit;
         } catch (error) {
             throw error;
         }
-    },
+    }
 
-    getPosicaoByDeposit: async (id) => {
+    async getPosicaoByDeposit(id) {
         try {
             // Lógica para obter posição pelo depósito, ajuste conforme necessário
             const deposit = await this.Deposit.findByPk(id);
@@ -66,6 +66,6 @@ const DepositService = {
             throw error;
         }
     }
-};
+}
 
 module.exports = DepositService;

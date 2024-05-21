@@ -1,22 +1,27 @@
 // ./controllers/depositController.js
 
-const DepositService = require('../services/depositService');
-
-const DepositController = {
-    constructor(depositService){
+class DepositController {
+    constructor(depositService) {
         this.depositService = depositService;
-    },
 
-    createDeposit: async (req, res) => {
+        // Bind methods to the class instance
+        this.createDeposit = this.createDeposit.bind(this);
+        this.updateDeposit = this.updateDeposit.bind(this);
+        this.findAllDeposits = this.findAllDeposits.bind(this);
+        this.findDepositById = this.findDepositById.bind(this);
+        this.getPosicaoByDeposit = this.getPosicaoByDeposit.bind(this);
+    }
+
+    async createDeposit(req, res) {
         try {
             const deposit = await this.depositService.createDeposit(req.body);
             res.status(201).json(deposit);
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
-    },
+    }
 
-    updateDeposit: async (req, res) => {
+    async updateDeposit(req, res) {
         try {
             const updatedDeposit = await this.depositService.updateDeposit(req.params.id, req.body);
             if (updatedDeposit[0] > 0) {
@@ -27,9 +32,9 @@ const DepositController = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
-    },
+    }
 
-    findAllDeposits: async (req, res) => {
+    async findAllDeposits(req, res) {
         try {
             const page = parseInt(req.query.page) || 1;
             const pageSize = parseInt(req.query.pageSize) || 10;
@@ -38,9 +43,9 @@ const DepositController = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
-    },
+    }
 
-    findDepositById: async (req, res) => {
+    async findDepositById(req, res) {
         try {
             const deposit = await this.depositService.findDepositById(req.params.id);
             if (deposit) {
@@ -51,9 +56,9 @@ const DepositController = {
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
-    },
+    }
 
-    getPosicaoByDeposit: async (req, res) => {
+    async getPosicaoByDeposit(req, res) {
         try {
             const posicao = await this.depositService.getPosicaoByDeposit(req.params.id);
             res.status(200).json(posicao);
@@ -61,6 +66,6 @@ const DepositController = {
             res.status(400).json({ error: error.message });
         }
     }
-};
+}
 
 module.exports = DepositController;

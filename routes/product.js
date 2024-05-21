@@ -8,7 +8,7 @@ const productServiceInstance = new ProductService(db.Product); // Ajuste o camin
 const ProductController = require('../controllers/productController'); // Ajuste o caminho conforme necessário
 const productControllerInstance = new ProductController(productServiceInstance);
 
-const { authenticateToken } = require('../middlewares/authMiddleware'); // Ajuste o caminho conforme necessário
+const { authenticateToken, logout } = require('../middleware/auth'); 
 
 const router = express.Router();
 

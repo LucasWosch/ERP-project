@@ -1,29 +1,22 @@
-// ./models/user.js
+// ./models/costCenter.js
 
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
-    const User = sequelize.define('User', {
+    const CostCenter = sequelize.define('CostCenter', {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        name: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        mail: {
+        code: {
             type: Sequelize.STRING,
             allowNull: false,
             unique: true
         },
-        password: {
+        name: {
             type: Sequelize.STRING,
             allowNull: false
-        },
-        dt_nasc: {
-            type: Sequelize.DATE
         },
         departmentId: {
             type: Sequelize.INTEGER,
@@ -34,11 +27,12 @@ module.exports = (sequelize) => {
         }
     });
 
-    User.associate = (models) => {
-        User.belongsTo(models.Department, {
-            foreignKey: 'departmentId'
+    CostCenter.associate = (models) => {
+        CostCenter.belongsTo(models.Department, {
+            foreignKey: 'departmentId',
+            as: 'department'
         });
     };
 
-    return User;
+    return CostCenter;
 };
