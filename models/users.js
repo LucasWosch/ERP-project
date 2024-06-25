@@ -35,9 +35,7 @@ module.exports = (sequelize) => {
     });
 
     User.associate = (models) => {
-        User.belongsTo(models.Department, {
-            foreignKey: 'departmentId'
-        });
+        User.belongsTo(models.Department, { foreignKey: 'departmentId', as: 'department' });
     };
 
     return User;

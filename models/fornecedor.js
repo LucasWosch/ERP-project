@@ -1,23 +1,15 @@
-// ./models/supplier.js
+// ./models/fornecedor.js
 
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
-    const Supplier = sequelize.define('Supplier', {
+    const Fornecedor = sequelize.define('Fornecedor', {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        name: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        address: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        phone: {
+        nome: {
             type: Sequelize.STRING,
             allowNull: false
         },
@@ -25,7 +17,15 @@ module.exports = (sequelize) => {
             type: Sequelize.STRING,
             allowNull: false,
             unique: true
+        },
+        telefone: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        ativo: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
         }
     });
-    return Supplier;
+    return Fornecedor;
 };

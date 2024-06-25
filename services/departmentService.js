@@ -1,6 +1,6 @@
 // ./services/departmentService.js
 
-const db = require('../models');
+const db = require('../models'); // Ajuste o caminho conforme necessário
 
 class DepartmentService {
     constructor(departmentModel) {
@@ -44,17 +44,6 @@ class DepartmentService {
         try {
             const department = await this.Department.findByPk(id);
             return department;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    async deleteDepartment(id) {
-        try {
-            const result = await this.Department.destroy({
-                where: { id: id }
-            });
-            return result;
         } catch (error) {
             throw error;
         }

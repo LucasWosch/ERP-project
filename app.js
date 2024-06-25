@@ -4,17 +4,26 @@ var cookieParser    = require('cookie-parser');
 var logger          = require('morgan');
 var http            = require('http');
 
-var indexRouter         = require('./routes/index');
-var usersRouter         = require('./routes/users');
-var productRouter       = require('./routes/product');
-var depositRouter       = require('./routes/deposit');
-var movimentacaoRouter  = require('./routes/movimentacao');
-var departamentRouter   = require('./routes/departament');
-var supplierRouter      = require('./routes/supplier');
-var costCenterRouter    = require('./routes/costCenter');
-var requisitionRoutes   = require('./routes/requisition');
-var quotationRoutes     = require('./routes/quotation');
-var purchaseRoutes      = require('./routes/purchase');
+var indexRouter                     = require('./routes/index');
+var usersRouter                     = require('./routes/users');
+var productRouter                   = require('./routes/product');
+var depositRouter                   = require('./routes/deposit');
+var movimentacaoRouter              = require('./routes/movimentacao');
+
+var departmentRouter                = require('./routes/department');
+var fornecedorRouter                = require('./routes/fornecedor');
+var costCenterRouter                = require('./routes/costCenter');
+var requisitionRoutes               = require('./routes/requisition');
+var quoteRoutes                     = require('./routes/quote');
+var purchaseRoutes                  = require('./routes/purchase');
+
+var tituloRoutes                    = require('./routes/titulo');
+var movimentacaoTituloRoutes        = require('./routes/movimentacaoTitulo');
+
+var clienteRoutes                   = require('./routes/cliente');
+var vendaRoutes                     = require('./routes/venda');
+var tituloReceberRoutes             = require('./routes/tituloReceber');
+var movimentacaoTituloReceberRoutes = require('./routes/movimentacaoTituloReceber');
 
 var app = express();
 
@@ -29,12 +38,21 @@ app.use('/users', usersRouter);
 app.use('/product', productRouter);
 app.use('/deposit', depositRouter);
 app.use('/movimentacao', movimentacaoRouter);
-app.use('/departament', departamentRouter);
-app.use('/supplier', supplierRouter);
+
+app.use('/department', departmentRouter);
+app.use('/fornecedor', fornecedorRouter);
 app.use('/costCenter', costCenterRouter);
 app.use('/requisition', requisitionRoutes);
-app.use('/quotation', quotationRoutes);
+app.use('/quote', quoteRoutes);
 app.use('/purchase', purchaseRoutes);
+
+app.use('/titulo', tituloRoutes);
+app.use('/movimentacaoTitulo', movimentacaoTituloRoutes);
+
+app.use('/cliente', clienteRoutes);
+app.use('/venda', vendaRoutes);
+app.use('/tituloReceber', tituloReceberRoutes);
+app.use('/movimentacaoTituloReceber', movimentacaoTituloReceberRoutes);
 
 const db = require('./models');
 

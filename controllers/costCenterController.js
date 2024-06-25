@@ -16,11 +16,11 @@ class CostCenterController {
 
     updateCostCenter = async (req, res) => {
         try {
-            const updatedCostCenter = await this.costCenterService.updateCostCenter(req.params.id, req.body);
+            const updatedCostCenter = await this.costCenterService.updateCostCenter(req.params.code, req.body);
             if (updatedCostCenter[0] > 0) {
-                res.status(200).json({ message: 'Cost Center updated successfully' });
+                res.status(200).json({ message: 'Cost center updated successfully' });
             } else {
-                res.status(404).json({ error: 'Cost Center not found' });
+                res.status(404).json({ error: 'Cost center not found' });
             }
         } catch (error) {
             res.status(400).json({ error: error.message });
@@ -38,13 +38,13 @@ class CostCenterController {
         }
     };
 
-    findCostCenterById = async (req, res) => {
+    findCostCenterByCode = async (req, res) => {
         try {
-            const costCenter = await this.costCenterService.findCostCenterById(req.params.id);
+            const costCenter = await this.costCenterService.findCostCenterByCode(req.params.code);
             if (costCenter) {
                 res.status(200).json(costCenter);
             } else {
-                res.status(404).json({ error: 'Cost Center not found' });
+                res.status(404).json({ error: 'Cost center not found' });
             }
         } catch (error) {
             res.status(400).json({ error: error.message });
@@ -53,11 +53,11 @@ class CostCenterController {
 
     deleteCostCenter = async (req, res) => {
         try {
-            const result = await this.costCenterService.deleteCostCenter(req.params.id);
-            if (result) {
-                res.status(200).json({ message: 'Cost Center deleted successfully' });
+            const deletedCostCenter = await this.costCenterService.deleteCostCenter(req.params.code);
+            if (deletedCostCenter) {
+                res.status(200).json({ message: 'Cost center deleted successfully' });
             } else {
-                res.status(404).json({ error: 'Cost Center not found' });
+                res.status(404).json({ error: 'Cost center not found' });
             }
         } catch (error) {
             res.status(400).json({ error: error.message });

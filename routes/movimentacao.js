@@ -17,5 +17,6 @@ router.get('/', authenticateToken, movimentacaoProdutoControllerInstance.findAll
 router.get('/produto/:produtoId', authenticateToken, movimentacaoProdutoControllerInstance.findByProduto);
 router.get('/deposito/:depositoId', authenticateToken, movimentacaoProdutoControllerInstance.findByDeposito);
 router.get('/data', authenticateToken, movimentacaoProdutoControllerInstance.findByData);
+router.get('/estoque/:produtoId', authenticateToken, movimentacaoProdutoControllerInstance.getStock);
 
 module.exports = router;

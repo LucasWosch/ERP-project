@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
             primaryKey: true
         },
         tipoMovimento: {
-            type: Sequelize.ENUM('Entrada.Compra', 'Saida.Compra', 'Entrada.Transferência', 'Saida.Transferência'),
+            type: Sequelize.ENUM('Entrada.Compra', 'Saida.Compra', 'Entrada.Transferência', 'Saida.Transferência', 'Saida.Requisicao'),
             allowNull: false
         },
         quantidade: {
@@ -18,8 +18,8 @@ module.exports = (sequelize) => {
             allowNull: false
         },
         precoUnitario: {
-            type: Sequelize.DECIMAL,
-            allowNull: false
+            type: Sequelize.FLOAT,
+            allowNull: true
         },
         data: {
             type: Sequelize.DATE,
@@ -31,7 +31,7 @@ module.exports = (sequelize) => {
         MovimentacaoProduto.belongsTo(models.Deposit, {
             foreignKey: {
                 name: 'depositoId',
-                allowNull: false
+                allowNull: true
             }
         });
         MovimentacaoProduto.belongsTo(models.Product, {

@@ -59,6 +59,15 @@ class MovimentacaoProdutoController {
             res.status(400).json({ error: error.message });
         }
     };
+
+    getStock = async (req, res) => {
+        try {
+            const estoque = await this.movimentacaoProdutoService.calculateStock(req.params.produtoId);
+            res.status(200).json({ produtoId: req.params.produtoId, estoque });
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    };
 }
 
 module.exports = MovimentacaoProdutoController;

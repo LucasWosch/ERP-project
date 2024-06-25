@@ -1,6 +1,7 @@
 // ./services/movimentacaoProdutoService.js
 
 const db = require('../models'); // Ajuste o caminho conforme necessário
+const { Op } = require('sequelize'); // Certifique-se de importar o operador correto
 
 class MovimentacaoProdutoService {
     constructor(movimentacaoProdutoModel) {
@@ -71,6 +72,48 @@ class MovimentacaoProdutoService {
             throw error;
         }
     }
+
+    async calculateStock(produtoId) {
+        try {
+            const movimentacoes = await this.MovimentacaoProduto.findAll({
+                where: { produtoId }
+            });
+
+            let totalEntrada = 0;
+            let totalSaida = 0;
+
+            movimentacoes.forEach(mov => {
+                if (mov.tipoMovimento.includes('Entrada')) {
+                    totalEntrada += mov.quantidade;
+                } else if (mov.tipoMovimento.includes('Saida')) {
+                    totalSaida += mov.quantidade;
+                }
+            });
+
+            return totalEntrada - totalSaida;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Novo método para buscar a última movimentação de entrada
+
+    async findLatestEntradaByProductId(produtoId) {
+        try {
+            return await this.MovimentacaoProduto.findOne({
+                where: {
+                    produtoId: produtoId,
+                    tipoMovimento: {
+                        [Op.like]: '%Entrada%' // Usando LIKE para correspondência parcial
+                    }
+                },
+                order: [['data', 'DESC']]
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
 }
+
 
 module.exports = MovimentacaoProdutoService;

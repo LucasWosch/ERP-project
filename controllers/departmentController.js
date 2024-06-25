@@ -50,19 +50,6 @@ class DepartmentController {
             res.status(400).json({ error: error.message });
         }
     };
-
-    deleteDepartment = async (req, res) => {
-        try {
-            const result = await this.departmentService.deleteDepartment(req.params.id);
-            if (result) {
-                res.status(200).json({ message: 'Department deleted successfully' });
-            } else {
-                res.status(404).json({ error: 'Department not found' });
-            }
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    };
 }
 
 module.exports = DepartmentController;

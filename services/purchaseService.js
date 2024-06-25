@@ -3,100 +3,97 @@
 const db = require('../models');
 
 class PurchaseService {
-    constructor(purchaseModel) {
+    constructor(purchaseModel, quoteService, tituloService, movimentacaoTituloService) {
         this.Purchase = purchaseModel;
+        this.quoteService = quoteService;
+        this.tituloService = tituloService;
+        this.movimentacaoTituloService = movimentacaoTituloService;
     }
 
     async createPurchase(purchaseData) {
+        const t = await db.sequelize.transaction();
         try {
-            const quotations = await db.Quotation.findAll({
-                where: { productId: purchaseData.productId }
-            });
+            const { productId, depositoId, quantity, buyerId } = purchaseData;
 
-            if (quotations.length < 3) {
-                throw new Error('At least 3 quotations are required to make a purchase');
-            }
+            const bestQuote = await this.quoteService.findBestQuoteByProduct(productId);
 
-            const bestQuotation = quotations.reduce((prev, current) => (prev.price < current.price ? prev : current));
-            purchaseData.quotationId = bestQuotation.id;
-            purchaseData.unitCost = bestQuotation.price;
+            const purchase = await this.Purchase.create({
+                ...purchaseData,
+                supplierId: bestQuote.supplierId,
+                quoteId: bestQuote.id,
+                unitCost: bestQuote.price,
+                status: 'Pending',
+                depositoId: depositoId
+            }, { transaction: t });
 
-            const purchase = await this.Purchase.create(purchaseData);
+            // Criar Titulo
+            const totalCost = bestQuote.price * quantity;
+            const titulo = await this.tituloService.createTitulo({
+                notaFiscal: bestQuote.id,
+                nParcela: 1, // Assumindo uma parcela para simplificação
+                vlrOriginal: totalCost,
+                dtVcto: new Date(), // Data de vencimento pode ser ajustada conforme necessário
+                situacao: 'Aberto'
+            }, t);
+
+            // Criar MovimentacaoTitulo para a abertura do título
+            await this.movimentacaoTituloService.createMovimentacaoTitulo({
+                idTitulo: titulo.id,
+                dataMov: new Date(),
+                tipoMov: 'Abertura',
+                valorMov: totalCost,
+                vlrMulta: 0,
+                vlrJuros: 0
+            }, t);
+
+            await t.commit();
             return purchase;
         } catch (error) {
+            await t.rollback();
             throw error;
         }
     }
 
-    async completePurchase(id) {
+    async closePurchase(purchaseId) {
+        const t = await db.sequelize.transaction();
         try {
-            const purchase = await this.Purchase.findByPk(id);
+            const purchase = await this.Purchase.findByPk(purchaseId);
+
             if (!purchase) {
                 throw new Error('Purchase not found');
             }
 
-            if (purchase.status !== 'pending') {
-                throw new Error('Purchase is not in pending state');
-            }
+            purchase.status = 'Closed';
+            await purchase.save({ transaction: t });
 
             await db.MovimentacaoProduto.create({
-                depositoId: purchase.depositoId,
                 produtoId: purchase.productId,
+                depositoId: purchase.depositoId,
                 tipoMovimento: 'Entrada.Compra',
                 quantidade: purchase.quantity,
                 precoUnitario: purchase.unitCost,
                 data: new Date()
-            });
+            }, { transaction: t });
 
-            await purchase.update({ status: 'completed' });
+            await t.commit();
             return purchase;
         } catch (error) {
+            await t.rollback();
             throw error;
         }
     }
 
-    async findAllPurchases(page, pageSize) {
+    async cancelPurchase(purchaseId) {
         try {
-            const offset = (page - 1) * pageSize;
-            const purchases = await this.Purchase.findAndCountAll({
-                limit: pageSize,
-                offset: offset,
-                include: [
-                    { model: db.Supplier, as: 'fornecedor' },
-                    { model: db.Quotation, as: 'cotacao' },
-                    { model: db.User, as: 'comprador' },
-                    { model: db.Product, as: 'produto' }
-                ]
-            });
-            return purchases;
-        } catch (error) {
-            throw error;
-        }
-    }
+            const purchase = await this.Purchase.findByPk(purchaseId);
 
-    async findPurchaseById(id) {
-        try {
-            const purchase = await this.Purchase.findByPk(id, {
-                include: [
-                    { model: db.Supplier, as: 'fornecedor' },
-                    { model: db.Quotation, as: 'cotacao' },
-                    { model: db.User, as: 'comprador' },
-                    { model: db.Product, as: 'produto' }
-                ]
-            });
+            if (!purchase) {
+                throw new Error('Purchase not found');
+            }
+
+            purchase.status = 'Cancelled';
+            await purchase.save();
             return purchase;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    async cancelPurchase(id) {
-        try {
-            const updatedPurchase = await this.Purchase.update(
-                { status: 'cancelled' },
-                { where: { id: id } }
-            );
-            return updatedPurchase;
         } catch (error) {
             throw error;
         }

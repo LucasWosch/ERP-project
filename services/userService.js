@@ -1,22 +1,21 @@
-
+// ./services/userService.js
 
 const bcrypt = require('bcryptjs');
 const db = require('../models'); // Ajuste o caminho conforme necessário
-const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'seu_secret_key_aqui';  // Use uma chave secreta segura e armazene-a em variáveis de ambiente
 const { generateToken } = require('../middleware/auth');  
 
-class userService {
+class UserService {
     constructor(userModel) {
         this.User = userModel;
     }
 
-    async create(name, mail, password) {
+    async create(name, mail, password, departmentId) {
         try {
             const newUser = await this.User.create({
                 name: name,
                 mail: mail,
-                password: bcrypt.hashSync(password, 10)  // Corrigindo para usar hashSync
+                password: bcrypt.hashSync(password, 10),
+                departmentId: departmentId
             });
             newUser.password = "";
             return newUser ? newUser : null;
@@ -29,16 +28,14 @@ class userService {
         try {
             const user = await this.User.findOne({ where: { mail: mail } });
             if (!user) {
-                return null;  // Usuário não encontrado
+                return null;
             }
 
-            // Verificar se a senha está correta
             const isPasswordValid = bcrypt.compareSync(password, user.password);
             if (!isPasswordValid) {
-                return null;  // Senha inválida
+                return null;
             }
 
-            // Gerar um token JWT usando a função centralizada
             const token = generateToken(user.id);
             return {  token };
         } catch (error) {
@@ -50,7 +47,7 @@ class userService {
         try {
             const user = await this.User.findOne({
                 where: { mail: email },
-                attributes: { exclude: ['password'] }  // Exclui a senha dos resultados
+                attributes: { exclude: ['password'] }
             });
             return user ? user : null;
         } catch (error) {
@@ -65,7 +62,8 @@ class userService {
                 attributes: { exclude: ['password'] },
                 limit,
                 offset,
-                order: [['createdAt', 'DESC']]  // Ordena por data de criação, ajuste conforme necessário
+                include: [{ model: db.Department, as: 'department' }],
+                order: [['createdAt', 'DESC']]
             });
 
             return {
@@ -80,4 +78,4 @@ class userService {
     }
 }
 
-module.exports = userService;
+module.exports = UserService;

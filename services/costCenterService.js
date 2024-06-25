@@ -16,10 +16,10 @@ class CostCenterService {
         }
     }
 
-    async updateCostCenter(id, costCenterData) {
+    async updateCostCenter(code, costCenterData) {
         try {
             const updatedCostCenter = await this.CostCenter.update(costCenterData, {
-                where: { id: id }
+                where: { code: code }
             });
             return updatedCostCenter;
         } catch (error) {
@@ -32,8 +32,7 @@ class CostCenterService {
             const offset = (page - 1) * pageSize;
             const costCenters = await this.CostCenter.findAndCountAll({
                 limit: pageSize,
-                offset: offset,
-                include: [{ model: db.Department, as: 'department' }]
+                offset: offset
             });
             return costCenters;
         } catch (error) {
@@ -41,23 +40,21 @@ class CostCenterService {
         }
     }
 
-    async findCostCenterById(id) {
+    async findCostCenterByCode(code) {
         try {
-            const costCenter = await this.CostCenter.findByPk(id, {
-                include: [{ model: db.Department, as: 'department' }]
-            });
+            const costCenter = await this.CostCenter.findByPk(code);
             return costCenter;
         } catch (error) {
             throw error;
         }
     }
 
-    async deleteCostCenter(id) {
+    async deleteCostCenter(code) {
         try {
-            const result = await this.CostCenter.destroy({
-                where: { id: id }
+            const deletedCostCenter = await this.CostCenter.destroy({
+                where: { code: code }
             });
-            return result;
+            return deletedCostCenter;
         } catch (error) {
             throw error;
         }

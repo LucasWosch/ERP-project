@@ -9,14 +9,13 @@ module.exports = (sequelize) => {
             autoIncrement: true,
             primaryKey: true
         },
-        name: {
+        nome: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        code: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            unique: true
+        ativo: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
         }
     });
     return Department;
