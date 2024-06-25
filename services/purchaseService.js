@@ -98,6 +98,19 @@ class PurchaseService {
             throw error;
         }
     }
+
+    async findAllPurchases(page, pageSize) {
+        try {
+            const offset = (page - 1) * pageSize;
+            const purchases = await this.Purchase.findAndCountAll({
+                limit: pageSize,
+                offset: offset
+            });
+            return purchases;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 module.exports = PurchaseService;

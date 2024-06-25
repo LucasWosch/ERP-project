@@ -31,6 +31,17 @@ class PurchaseController {
             res.status(400).json({ error: error.message });
         }
     };
+    
+    findAllPurchases = async (req, res) => {
+        try {
+            const page = parseInt(req.query.page) || 1;
+            const pageSize = parseInt(req.query.pageSize) || 10;
+            const purchases = await this.purchaseService.findAllPurchases(page, pageSize);
+            res.status(200).json(purchases);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    };
 }
 
 module.exports = PurchaseController;

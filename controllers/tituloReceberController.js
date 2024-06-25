@@ -28,6 +28,15 @@ class TituloReceberController {
             res.status(400).json({ error: error.message });
         }
     };
+
+    registerPayment = async (req, res) => {
+        try {
+            const tituloReceber = await this.tituloReceberService.registerPayment(req.params.id, req.body);
+            res.status(200).json(tituloReceber);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    };
 }
 
 module.exports = TituloReceberController;

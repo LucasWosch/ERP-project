@@ -20,10 +20,6 @@ class RequisitionService {
             }
 
             const entrada = await this.movimentacaoProdutoService.findLatestEntradaByProductId(productId);
-            if (!entrada) {
-                throw new Error(`Nenhuma movimentação de entrada encontrada para o produto com ID ${productId}`);
-            }
-
             const currentStock = await this.movimentacaoProdutoService.calculateStock(productId, depositoId);
 
             if (currentStock >= quantity) {

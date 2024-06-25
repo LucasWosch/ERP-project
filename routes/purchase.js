@@ -20,6 +20,7 @@ const { authenticateToken } = require('../middleware/auth');
 const router = express.Router();
 
 router.post('/', authenticateToken, purchaseControllerInstance.createPurchase);
+router.get('/', authenticateToken, purchaseControllerInstance.findAllPurchases);
 router.put('/:id/close', authenticateToken, purchaseControllerInstance.closePurchase);
 router.put('/:id/cancel', authenticateToken, purchaseControllerInstance.cancelPurchase);
 

@@ -27,6 +27,7 @@ module.exports = (sequelize) => {
         },
         departmentId: {
             type: Sequelize.INTEGER,
+            allowNull: true,
             references: {
                 model: 'Departments',
                 key: 'id'

@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
             primaryKey: true
         },
         tipoMovimento: {
-            type: Sequelize.ENUM('Entrada.Compra', 'Saida.Compra', 'Entrada.Transferência', 'Saida.Transferência', 'Saida.Requisicao'),
+            type: Sequelize.ENUM('Entrada.Compra', 'Saida.Compra', 'Entrada.Transferência', 'Saida.Transferência', 'Saida.Requisicao', 'Saida.Venda'),
             allowNull: false
         },
         quantidade: {
